@@ -133,8 +133,7 @@ class BaseReinforcementLearningModel(IFreqaiModel):
         :param data_dictionary: dict = common data dictionary containing train and test
             features/labels/weights.
         :param prices_train/test: DataFrame = dataframe comprised of the prices to be used in the
-            environment during training
-        or testing
+            environment during training or testing
         :param dk: FreqaiDataKitchen = the datakitchen for the current pair
         """
         train_df = data_dictionary["train_features"]
@@ -167,14 +166,14 @@ class BaseReinforcementLearningModel(IFreqaiModel):
 
     def get_state_info(self, pair: str) -> Tuple[float, float, int]:
         """
-        State info during dry/live/backtesting which is fed back
+        State info during dry/live (not backtesting) which is fed back
         into the model.
-        :param:
-        pair: str = COIN/STAKE to get the environment information for
-        :returns:
-        market_side: float = representing short, long, or neutral for
+        :param pair: str = COIN/STAKE to get the environment information for
+        :return:
+        :market_side: float = representing short, long, or neutral for
             pair
-        trade_duration: int = the number of candles that the trade has
+        :current_profit: float = unrealized profit of the current trade
+        :trade_duration: int = the number of candles that the trade has
             been open for
         """
         open_trades = Trade.get_trades_proxy(is_open=True)
@@ -201,7 +200,7 @@ class BaseReinforcementLearningModel(IFreqaiModel):
     ) -> Tuple[DataFrame, npt.NDArray[np.int_]]:
         """
         Filter the prediction features data and predict with it.
-        :param: unfiltered_dataframe: Full dataframe for the current backtest period.
+        :param unfiltered_dataframe: Full dataframe for the current backtest period.
         :return:
         :pred_df: dataframe containing the predictions
         :do_predict: np.array of 1s and 0s to indicate places where freqai needed to remove
